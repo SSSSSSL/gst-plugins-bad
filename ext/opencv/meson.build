@@ -4,25 +4,26 @@ gstopencv_sources = [
   'gstcvequalizehist.cpp',
   'gstcverode.cpp',
   'gstcvlaplace.cpp',
-  'gstcvsmooth.cpp',
   'gstcvsobel.cpp',
-  'gstdisparity.cpp',
   'gstedgedetect.cpp',
-  'gstfaceblur.cpp',
-  'gstfacedetect.cpp',
-  'gstgrabcut.cpp',
-  'gsthanddetect.cpp',
   'gstmotioncells.cpp',
   'gstopencv.cpp',
   'gstretinex.cpp',
-  'gstsegmentation.cpp',
   'gstskindetect.cpp',
-  'gsttemplatematch.cpp',
   'gsttextoverlay.cpp',
   'MotionCells.cpp',
   'motioncells_wrapper.cpp',
-  'gstdewarp.cpp'
+  'gstcvtracker.cpp'
 ]
+#  'gstcvsmooth.cpp',
+#  'gstfaceblur.cpp',
+#  'gstfacedetect.cpp',
+#  'gstdewarp.cpp',
+#  'gstgrabcut.cpp',
+#  'gstdisparity.cpp',
+#  'gstsegmentation.cpp',
+#  'gsttemplatematch.cpp',
+#  'gsthanddetect.cpp',
 
 libopencv2_headers = [
   'opencv2/core/core_c.h',
@@ -32,10 +33,18 @@ libopencv2_headers = [
   'opencv2/imgproc/imgproc_c.h',
   'opencv2/objdetect/objdetect.hpp',
   'opencv2/video/background_segm.hpp',
+  'opencv2/tracking.hpp'
 ]
 
-libopencv3_headers = [
-  'opencv2/bgsegm.hpp',
+libopencv4_headers = [
+  'opencv2/video/background_segm.hpp',
+  'opencv4/opencv2/calib3d.hpp',
+  'opencv4/opencv2/core.hpp',
+  'opencv4/opencv2/imgproc.hpp',
+  'opencv4/opencv2/objdetect.hpp',
+  'opencv4/opencv2/opencv.hpp',
+  'opencv4/opencv2/video.hpp',
+  'opencv4/opencv2/tracking.hpp',
 ]
 
 gstopencv_cargs = ['-DGST_HAAR_CASCADES_DIR="@0@"']
@@ -50,9 +59,13 @@ if opencv_found
       opencv_found = false
     endif
   endforeach
+endif
 
-  if opencv_dep.version() >= '3.0.0'
-    foreach h : libopencv3_headers
+if not opencv_found
+  opencv_dep = dependency('opencv4', version : ['>= 4.0.0', '< 4.6.0'], required : false)
+  opencv_found = opencv_dep.found()
+  if opencv_found
+    foreach h : libopencv4_headers
       if not cxx.has_header(h)
         message('Needed header "' + h + '" not found')
         opencv_found = false
@@ -60,7 +73,7 @@ if opencv_found
     endforeach
   endif
 endif
-
+   
 if opencv_found
   opencv_prefix = opencv_dep.get_pkgconfig_variable('prefix')
   gstopencv_cargs += ['-DOPENCV_PREFIX="' + opencv_prefix + '"']
@@ -75,9 +88,18 @@ if opencv_found
     if r.returncode() == 0
       gstopencv_cargs += '-DOPENCV_PATH_NAME="OpenCV"'
     else
-      error('Unable to detect OpenCV data directory')
+      r = run_command('test', '-d', opencv_prefix + '/share/opencv4')
+      if r.returncode() == 0
+        gstopencv_cargs += '-DOPENCV_PATH_NAME="opencv4"'
+      else
+        error('Unable to detect OpenCV data directory')
+        opencv_found = false
+      endif
     endif
   endif
+endif
+
+if opencv_found
   gstopencv = library('gstopencv',
     gstopencv_sources,
     cpp_args : gst_plugins_bad_args + gstopencv_cargs + [ '-DGST_USE_UNSTABLE_API' ],

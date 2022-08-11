@@ -10,7 +10,7 @@ opencv_headers = [
 ]
 install_headers(opencv_headers, subdir : 'gstreamer-1.0/gst/opencv')
 
-opencv_dep = dependency('opencv', version : '>= 2.3.0', required : false)
+opencv_dep = dependency('opencv4', version : '>= 2.3.0', required : false)
 if opencv_dep.found()
   gstopencv = library('gstopencv-' + api_version,
     opencv_sources,
