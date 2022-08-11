@@ -27,21 +27,22 @@
 #include "gstcvequalizehist.h"
 #include "gstcverode.h"
 #include "gstcvlaplace.h"
-#include "gstcvsmooth.h"
+//#include "gstcvsmooth.h"
 #include "gstcvsobel.h"
 #include "gstedgedetect.h"
-#include "gstfaceblur.h"
-#include "gstfacedetect.h"
+//#include "gstfaceblur.h"
+//#include "gstfacedetect.h"
 #include "gstmotioncells.h"
-#include "gsttemplatematch.h"
+//#include "gsttemplatematch.h"
 #include "gsttextoverlay.h"
-#include "gsthanddetect.h"
+//#include "gsthanddetect.h"
 #include "gstskindetect.h"
 #include "gstretinex.h"
-#include "gstsegmentation.h"
-#include "gstgrabcut.h"
-#include "gstdisparity.h"
-#include "gstdewarp.h"
+//#include "gstsegmentation.h"
+//#include "gstgrabcut.h"
+//#include "gstdisparity.h"
+//#include "gstdewarp.h"
+#include "gstcvtracker.h"
 
 static gboolean
 plugin_init (GstPlugin * plugin)
@@ -58,8 +59,8 @@ plugin_init (GstPlugin * plugin)
   if (!gst_cv_laplace_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_cv_smooth_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_cv_smooth_plugin_init (plugin))
+  //   return FALSE;
 
   if (!gst_cv_sobel_plugin_init (plugin))
     return FALSE;
@@ -67,23 +68,23 @@ plugin_init (GstPlugin * plugin)
   if (!gst_edge_detect_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_face_blur_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_face_blur_plugin_init (plugin))
+  //   return FALSE;
 
-  if (!gst_face_detect_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_face_detect_plugin_init (plugin))
+  //   return FALSE;
 
   if (!gst_motion_cells_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_template_match_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_template_match_plugin_init (plugin))
+  //   return FALSE;
 
   if (!gst_opencv_text_overlay_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_handdetect_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_handdetect_plugin_init (plugin))
+  //   return FALSE;
 
   if (!gst_skin_detect_plugin_init (plugin))
     return FALSE;
@@ -91,16 +92,19 @@ plugin_init (GstPlugin * plugin)
   if (!gst_retinex_plugin_init (plugin))
     return FALSE;
 
-  if (!gst_segmentation_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_segmentation_plugin_init (plugin))
+  //   return FALSE;
 
-  if (!gst_grabcut_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_grabcut_plugin_init (plugin))
+  //   return FALSE;
 
-  if (!gst_disparity_plugin_init (plugin))
-    return FALSE;
+  // if (!gst_disparity_plugin_init (plugin))
+  //   return FALSE;
 
-  if (!gst_dewarp_plugin_init (plugin))
+  // if (!gst_dewarp_plugin_init (plugin))
+  //   return FALSE;
+
+  if (!gst_cvtracker_plugin_init (plugin))
     return FALSE;
 
   return TRUE;
@@ -111,3 +115,4 @@ GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
     opencv,
     "GStreamer OpenCV Plugins",
     plugin_init, VERSION, "LGPL", GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
+
